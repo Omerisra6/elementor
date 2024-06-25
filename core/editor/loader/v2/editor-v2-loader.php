@@ -1,9 +1,11 @@
 <?php
 namespace Elementor\Core\Editor\Loader\V2;
 
+use Elementor\Core\Editor\Editor;
 use Elementor\Core\Editor\Loader\Common\Editor_Common_Scripts_Settings;
 use Elementor\Core\Editor\Loader\Editor_Base_Loader;
 use Elementor\Core\Utils\Assets_Translation_Loader;
+use Elementor\Plugin;
 use Elementor\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -43,11 +45,20 @@ class Editor_V2_Loader extends Editor_Base_Loader {
 		'ui',
 	];
 
+	const ATOMIC_WIDGET_PACKAGES = [
+		'editor-editing-panel',
+	];
+
 	/**
 	 * @return void
 	 */
 	public function init() {
 		$packages = array_merge( $this->get_packages_to_enqueue(), self::LIBS );
+
+		$is_atomic_widgets_active = Plugin::$instance->experiments->is_feature_active( Editor::EDITOR_V2_EXPERIMENT_NAME );
+		if ( $is_atomic_widgets_active ) {
+			$packages = array_merge( $packages, self::ATOMIC_WIDGET_PACKAGES );
+		}
 
 		foreach ( $packages as $package ) {
 			$this->assets_config_provider->load( $package );

@@ -34,6 +34,8 @@ class Editor {
 
 	const EDITOR_V2_EXPERIMENT_NAME = 'editor_v2';
 
+	const ATOMIC_WIDGET_EXPERIMENT_NAME = 'atomic_widgets';
+
 	/**
 	 * Post ID.
 	 *
@@ -540,6 +542,8 @@ class Editor {
 
 		$this->register_editor_v2_experiment();
 
+		$this->register_atomic_widget_experiment();
+
 		// Handle autocomplete feature for URL control.
 		add_filter( 'wp_link_query_args', [ $this, 'filter_wp_link_query_args' ] );
 		add_filter( 'wp_link_query', [ $this, 'filter_wp_link_query' ] );
@@ -615,6 +619,25 @@ class Editor {
 			),
 			'default' => Experiments_Manager::STATE_INACTIVE,
 			'release_status' => Experiments_Manager::RELEASE_STATUS_BETA,
+		] );
+	}
+
+	/**
+	 * Adding Atomic Widget experiment.
+	 *
+	 * @return void
+	 * @throws \Exception
+	 */
+	private function register_atomic_widget_experiment() {
+		Plugin::$instance->experiments->add_feature( [
+			Plugin::$instance->experiments::TYPE_HIDDEN => true,
+			'name' => static::ATOMIC_WIDGET_EXPERIMENT_NAME,
+			'title' => esc_html__( 'Atomic Widget', 'elementor' ),
+			'description' => esc_html__( 'Enable the Atomic Widget experiment to improve the performance of your site.', 'elementor' ),
+			'default' => Experiments_Manager::STATE_INACTIVE,
+			'release_status' => Experiments_Manager::RELEASE_STATUS_BETA,
+			'dependencies' => [ static::EDITOR_V2_EXPERIMENT_NAME ],
+			'hidden' => true,
 		] );
 	}
 
