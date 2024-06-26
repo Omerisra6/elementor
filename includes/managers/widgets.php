@@ -100,6 +100,10 @@ class Widgets_Manager {
 			'share-buttons',
 		];
 
+		$v2_build_filenames = [
+			'heading-v1',
+		];
+
 		$this->_widget_types = [];
 
 		$this->register_promoted_widgets();
@@ -107,11 +111,13 @@ class Widgets_Manager {
 		foreach ( $build_widgets_filename as $widget_filename ) {
 			include ELEMENTOR_PATH . 'includes/widgets/' . $widget_filename . '.php';
 
-			$class_name = str_replace( '-', '_', $widget_filename );
+            $this->register_widget_by_filename($widget_filename);
+		}
 
-			$class_name = __NAMESPACE__ . '\Widget_' . $class_name;
+		foreach ( $v2_build_filenames as $widget_filename ) {
+			include ELEMENTOR_PATH . 'includes/widgets/v2/' . $widget_filename . '.php';
 
-			$this->register( new $class_name() );
+			$this->register_widget_by_filename($widget_filename);
 		}
 
 		$this->register_wp_widgets();
@@ -144,6 +150,14 @@ class Widgets_Manager {
 		 */
 		do_action( 'elementor/widgets/register', $this );
 	}
+
+    private function register_widget_by_filename(string $filename) {
+        $class_name = str_replace( '-', '_', $filename );
+
+        $class_name = __NAMESPACE__ . '\Widget_' . $class_name;
+
+        $this->register( new $class_name() );
+    }
 
 	/**
 	 * Register WordPress widgets.
@@ -255,7 +269,7 @@ class Widgets_Manager {
 		 * @since 3.18.0
 		 *
 		 * @param bool $should_register Should widget be registered. Default is `true`.
-		 * @param \Elementor\Widget_Base $widget_instance Widget instance.
+		 * @param \Elementor\$widget_instance Widget instance.
 		 */
 		$should_register = apply_filters( 'elementor/widgets/is_widget_enabled', true, $widget_instance );
 
