@@ -13,25 +13,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-class Atomic_Heading extends Atomic_Widget_Base {
+class Atomic_Text extends Atomic_Widget_Base {
 	public function get_icon() {
-		return 'eicon-t-letter';
+		return 'eicon-text';
 	}
 
 	public function get_title() {
-		return esc_html__( 'Atomic Heading', 'elementor' );
+		return esc_html__( 'Atomic Text', 'elementor' );
 	}
 
 	public function get_name() {
-		return 'atomic-heading';
+		return 'atomic-text';
 	}
 
 	protected function render() {
 		$settings = $this->get_atomic_settings();
 
-		// TODO: Move the validation/sanitization to the props schema constraints.
-		$escaped_tag = Utils::validate_html_tag( $settings['tag'] );
-		$escaped_title = esc_html( $settings['title'] );
+		$escaped_text = esc_html( $settings['text'] );
 
 		$class = '';
 		if ( ! empty( $settings['classes'] ) ) {
@@ -39,48 +37,19 @@ class Atomic_Heading extends Atomic_Widget_Base {
 		}
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo "<$escaped_tag $class>$escaped_title</$escaped_tag>";
+		echo "<p $class>$escaped_text</p>";
 	}
 
 	protected function define_atomic_controls(): array {
-		$tag_control = Select_Control::bind_to( 'tag' )
-			->set_label( esc_html__( 'Tag', 'elementor' ) )
-			->set_options( [
-				[
-					'value' => 'h1',
-					'label' => 'H1',
-				],
-				[
-					'value' => 'h2',
-					'label' => 'H2',
-				],
-				[
-					'value' => 'h3',
-					'label' => 'H3',
-				],
-				[
-					'value' => 'h4',
-					'label' => 'H4',
-				],
-				[
-					'value' => 'h5',
-					'label' => 'H5',
-				],
-				[
-					'value' => 'h6',
-					'label' => 'H6',
-				],
-			]);
 
-		$title_control = Textarea_Control::bind_to( 'title' )
+		$text_control = Textarea_Control::bind_to( 'text' )
 			->set_label( __( 'Title', 'elementor' ) )
-			->set_placeholder( __( 'Type your title here', 'elementor' ) );
+			->set_placeholder( __( 'Type your text here', 'elementor' ) );
 
 		$tag_and_title_section = Section::make()
 			->set_label( __( 'Content', 'elementor' ) )
 			->set_items( [
-				$tag_control,
-				$title_control,
+				$text_control,
 			]);
 
 		return [
@@ -94,16 +63,9 @@ class Atomic_Heading extends Atomic_Widget_Base {
 				->type( 'classes' )
 				->default( [] ),
 
-			'tag' => Atomic_Prop::make()
+			'text' => Atomic_Prop::make()
 				->string()
-				->constraints( [
-					Enum::make( [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ] ),
-				] )
-				->default( 'h2' ),
-
-			'title' => Atomic_Prop::make()
-				->string()
-				->default( __( 'Your Title Here', 'elementor' ) ),
+				->default( __( 'Your Text Here', 'elementor' ) ),
 		];
 	}
 }

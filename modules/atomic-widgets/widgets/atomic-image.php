@@ -23,7 +23,7 @@ class Atomic_Image extends Atomic_Widget_Base {
 	}
 
 	public function get_name() {
-		return 'a-image';
+		return 'atomic-image';
 	}
 
 	protected function render() {
