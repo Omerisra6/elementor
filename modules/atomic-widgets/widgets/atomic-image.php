@@ -32,6 +32,7 @@ class Atomic_Image extends Atomic_Widget_Base {
 		$image_url = $settings['image'];
 
 		?> <img
+			class='<?php echo esc_attr( $settings['classes'] ); ?>'
 			src='<?php echo esc_url( $image_url ); ?>'
 			alt='Atomic Image'
 		/>
@@ -127,6 +128,10 @@ class Atomic_Image extends Atomic_Widget_Base {
 					Enum::make( $image_sizes ),
 				] )
 				->default( 'full' ),
+
+			'classes' => Atomic_Prop::make()
+				->type( 'classes' )
+				->default( [] ),
 		];
 	}
 }
