@@ -20,10 +20,13 @@ class Module extends BaseModule implements Checklist_Module_Interface {
 	const EXPERIMENT_ID = 'launchpad-checklist';
 	const DB_OPTION_KEY = 'elementor_checklist';
 	const VISIBILITY_SWITCH_ID = 'show_launchpad_checklist';
+	const FIRST_CLOSED_CHECKLIST_IN_EDITOR = 'first_closed_checklist_in_editor';
+	const LAST_OPENED_TIMESTAMP = 'last_opened_timestamp';
 
-	private $user_progress = null;
 	private Steps_Manager $steps_manager;
 	private Wordpress_Adapter_Interface $wordpress_adapter;
+	private $user_progress = null;
+	private static $instance = null;
 
 	/**
 	 * @param ?Wordpress_Adapter_Interface $wordpress_adapter
@@ -31,6 +34,7 @@ class Module extends BaseModule implements Checklist_Module_Interface {
 	 * @return void
 	 */
 	public function __construct( ?Wordpress_Adapter_Interface $wordpress_adapter = null ) {
+		static::$instance = $this;
 		$this->wordpress_adapter = $wordpress_adapter ?? new Wordpress_Adapter();
 		parent::__construct();
 
@@ -45,6 +49,10 @@ class Module extends BaseModule implements Checklist_Module_Interface {
 		$this->user_progress = $this->user_progress ?? $this->get_user_progress_from_db();
 		$this->steps_manager = new Steps_Manager( $this );
 		$this->enqueue_editor_scripts();
+	}
+
+	public static function instance() : self {
+		return static::$instance ?? new self();
 	}
 
 	/**
@@ -74,7 +82,8 @@ class Module extends BaseModule implements Checklist_Module_Interface {
 	 *      @type array $steps {
 	 *          @type string $step_id => {
 	 *              @type bool $is_marked_completed
-	 *              @type bool $is_completed
+	 *              @type bool $is_absolute_competed
+	 *              @type bool $is_immutable_completed
 	 *          }
 	 *      }
 	 *  }
@@ -107,6 +116,21 @@ class Module extends BaseModule implements Checklist_Module_Interface {
 	 */
 	public function set_step_progress( $step_id, $step_progress ) : void {
 		$this->user_progress['steps'][ $step_id ] = $step_progress;
+		$this->update_user_progress_in_db();
+	}
+
+	public function update_user_progress( $new_data ) : void {
+		$allowed_properties = [
+			self::FIRST_CLOSED_CHECKLIST_IN_EDITOR => $new_data[ self::FIRST_CLOSED_CHECKLIST_IN_EDITOR ] ?? null,
+			self::LAST_OPENED_TIMESTAMP => $new_data[ self::LAST_OPENED_TIMESTAMP ] ?? null,
+		];
+
+		foreach ( $allowed_properties as $key => $value ) {
+			if ( null !== $value ) {
+				$this->user_progress[ $key ] = $value;
+			}
+		}
+
 		$this->update_user_progress_in_db();
 	}
 
@@ -153,7 +177,7 @@ class Module extends BaseModule implements Checklist_Module_Interface {
 			->get_model()
 			->get_settings( self::VISIBILITY_SWITCH_ID );
 		$is_new_installation = Upgrade_Manager::is_new_installation() ? 'yes' : '';
-		$is_preference_switch_on = $user_preferences[ self::VISIBILITY_SWITCH_ID ] ?? $is_new_installation;
+		$is_preference_switch_on = $user_preferences ?? $is_new_installation;
 
 		return 'yes' === $is_preference_switch_on;
 	}
@@ -170,7 +194,8 @@ class Module extends BaseModule implements Checklist_Module_Interface {
 
 	private function init_user_progress() : void {
 		$default_settings = [
-			'last_opened_timestamp' => null,
+			self::LAST_OPENED_TIMESTAMP => -1,
+			self::FIRST_CLOSED_CHECKLIST_IN_EDITOR => false,
 			'steps' => [],
 		];
 

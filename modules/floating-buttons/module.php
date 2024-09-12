@@ -7,6 +7,7 @@ use Elementor\Core\Admin\Menu\Admin_Menu_Manager;
 use Elementor\Core\Base\Document;
 use Elementor\Core\Base\Module as BaseModule;
 use Elementor\Core\Documents_Manager;
+use Elementor\Core\Experiments\Manager;
 use Elementor\Modules\FloatingButtons\Base\Widget_Floating_Bars_Base;
 use Elementor\Modules\FloatingButtons\AdminMenuItems\Floating_Buttons_Empty_View_Menu_Item;
 use Elementor\Modules\FloatingButtons\AdminMenuItems\Floating_Buttons_Menu_Item;
@@ -25,7 +26,6 @@ class Module extends BaseModule {
 
 	const EXPERIMENT_NAME = 'floating-buttons';
 	const FLOATING_ELEMENTS_TYPE_META_KEY = '_elementor_floating_elements_type';
-	const ROUTER_VERSION = '1.0.0';
 	const ROUTER_OPTION_KEY = 'elementor_floating_buttons_router_version';
 	const META_CLICK_TRACKING = '_elementor_click_tracking';
 	const CLICK_TRACKING_NONCE = 'elementor-conversion-center-click';
@@ -44,6 +44,18 @@ class Module extends BaseModule {
 		return [
 			'floating-buttons' => esc_html__( 'Floating Buttons', 'elementor' ),
 			'floating-bars' => esc_html__( 'Floating Bars', 'elementor' ),
+		];
+	}
+
+	// TODO: This is a hidden experiment which needs to remain enabled like this until 3.26 for pro compatibility.
+	public static function get_experimental_data() {
+		return [
+			'name' => self::EXPERIMENT_NAME,
+			'title' => esc_html__( 'Floating Buttons', 'elementor' ),
+			'hidden' => true,
+			'default' => Manager::STATE_ACTIVE,
+			'release_status' => Manager::RELEASE_STATUS_STABLE,
+			'mutable' => false,
 		];
 	}
 
@@ -96,7 +108,12 @@ class Module extends BaseModule {
 			} );
 		}
 
-		add_action( 'save_post_' . static::CPT_FLOATING_BUTTONS, [ $this, 'flush_permalinks_on_save' ] );
+		add_action( 'current_screen', function() {
+			$screen = get_current_screen();
+			if ( $screen && 'edit-e-floating-buttons' === $screen->id ) {
+				$this->flush_permalinks_on_elementor_version_change();
+			}
+		});
 
 		add_action( 'wp_ajax_elementor_send_clicks', [ $this, 'handle_click_tracking' ] );
 		add_action( 'wp_ajax_nopriv_elementor_send_clicks', [ $this, 'handle_click_tracking' ] );
@@ -303,14 +320,10 @@ class Module extends BaseModule {
 		}
 	}
 
-	public function flush_permalinks_on_save() {
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return;
-		}
-
-		if ( get_option( static::ROUTER_OPTION_KEY ) !== static::ROUTER_VERSION ) {
+	public function flush_permalinks_on_elementor_version_change() {
+		if ( get_option( static::ROUTER_OPTION_KEY ) !== ELEMENTOR_VERSION ) {
 			flush_rewrite_rules();
-			update_option( static::ROUTER_OPTION_KEY, static::ROUTER_VERSION );
+			update_option( static::ROUTER_OPTION_KEY, ELEMENTOR_VERSION );
 		}
 	}
 
@@ -552,7 +565,7 @@ class Module extends BaseModule {
 		wp_register_style(
 			'widget-floating-buttons',
 			$this->get_css_assets_url( 'widget-floating-buttons', null, true, true ),
-			[],
+			[ 'elementor-icons' ],
 			ELEMENTOR_VERSION
 		);
 	}

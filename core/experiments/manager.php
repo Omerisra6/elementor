@@ -335,6 +335,22 @@ class Manager extends Base_Object {
 
 	private function add_default_features() {
 		$this->add_feature( [
+			'name' => 'e_optimized_css_loading',
+			'title' => esc_html__( 'Improved CSS Loading', 'elementor' ),
+			'tag' => esc_html__( 'Performance', 'elementor' ),
+			'description' => sprintf(
+				'%1$s <a href="https://go.elementor.com/wp-dash-improved-css-loading/" target="_blank">%2$s</a>',
+				esc_html__( 'Please Note! The “Improved CSS Loading” mode reduces the amount of CSS code that is loaded on the page by default. When activated, the CSS code will be loaded, rather inline or in a dedicated file, only when needed. Activating this experiment may cause conflicts with incompatible plugins.', 'elementor' ),
+				esc_html__( 'Learn more', 'elementor' )
+			),
+			'release_status' => self::RELEASE_STATUS_STABLE,
+			'default' => self::STATE_INACTIVE,
+			static::TYPE_HIDDEN => true,
+			'mutable' => false,
+			'generator_tag' => true,
+		] );
+
+		$this->add_feature( [
 			'name' => 'e_font_icon_svg',
 			'title' => esc_html__( 'Inline Font Icons', 'elementor' ),
 			'tag' => esc_html__( 'Performance', 'elementor' ),
@@ -466,6 +482,19 @@ class Manager extends Base_Object {
 			static::TYPE_HIDDEN => true,
 			'release_status' => self::RELEASE_STATUS_ALPHA,
 			'default' => self::STATE_ACTIVE,
+		] );
+
+		// TODO: Possibly remove experiment in v3.27.0 [ED-15717].
+		// Check this reference in Pro: 'sticky_anchor_link_offset'.
+		$this->add_feature( [
+			'name' => 'e_css_smooth_scroll',
+			'title' => esc_html__( 'CSS Smooth Scroll', 'elementor' ),
+			'tag' => esc_html__( 'Performance', 'elementor' ),
+			'description' => esc_html__( 'Use CSS Smooth Scroll to improve the user experience on your site. This experiment replaces the default JavaScript-based smooth scroll with a CSS-based solution.', 'elementor' ),
+			'release_status' => self::RELEASE_STATUS_DEV,
+			static::TYPE_HIDDEN => true,
+			'default' => self::STATE_ACTIVE,
+			'mutable' => false,
 		] );
 	}
 

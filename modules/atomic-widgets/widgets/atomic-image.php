@@ -1,12 +1,13 @@
 <?php
 namespace Elementor\Modules\AtomicWidgets\Widgets;
 
-use Elementor\Modules\AtomicWidgets\Schema\Constraints\Enum;
+use Elementor\Modules\AtomicWidgets\PropTypes\Classes_Prop_Type;
+use Elementor\Modules\AtomicWidgets\PropTypes\Image_Prop_Type;
+use Elementor\Modules\AtomicWidgets\PropTypes\String_Prop_Type;
 use Elementor\Utils;
 use Elementor\Modules\AtomicWidgets\Controls\Section;
 use Elementor\Modules\AtomicWidgets\Controls\Types\Select_Control;
 use Elementor\Modules\AtomicWidgets\Base\Atomic_Widget_Base;
-use Elementor\Modules\AtomicWidgets\Schema\Atomic_Prop;
 use Elementor\Modules\AtomicWidgets\Controls\Types\Image_Control;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,29 +15,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Atomic_Image extends Atomic_Widget_Base {
-	public function get_icon() {
-		return 'eicon-image';
+	public function get_name() {
+		return 'atomic-image';
 	}
 
 	public function get_title() {
 		return esc_html__( 'Atomic Image', 'elementor' );
 	}
 
-	public function get_name() {
-		return 'atomic-image';
+	public function get_icon() {
+		return 'eicon-image';
 	}
 
 	protected function render() {
 		$settings = $this->get_atomic_settings();
 
-		$image_url = $settings['image'];
+		if ( ! isset( $settings['image'] ) ) {
+			return;
+		}
 
-		?> <img
-			class='<?php echo esc_attr( $settings['classes'] ); ?>'
-			src='<?php echo esc_url( $image_url ); ?>'
-			alt='Atomic Image'
-		/>
-		<?php
+		$attrs = array_filter( array_merge(
+			$settings['image'],
+			[ 'class' => $settings['classes'] ?? '' ]
+		) );
+
+		Utils::print_wp_kses_extended(
+			sprintf(
+				'<img %1$s >',
+				Utils::render_html_attributes( $attrs )
+			),
+			[ 'image' ]
+		);
 	}
 
 	private static function get_image_size_options() {
@@ -116,17 +125,16 @@ class Atomic_Image extends Atomic_Widget_Base {
 		);
 
 		return [
-			'image' => Atomic_Prop::make()
-				->type( 'image' )
+			'classes' => Classes_Prop_Type::make()
+				->default( [] ),
+
+			'image' => Image_Prop_Type::make()
 				->default( [
 					'url' => Utils::get_placeholder_image_src(),
 				] ),
 
-			'image_size' => Atomic_Prop::make()
-				->string()
-				->constraints( [
-					Enum::make( $image_sizes ),
-				] )
+			'image_size' => String_Prop_Type::make()
+				->enum( $image_sizes )
 				->default( 'full' ),
 
 			'classes' => Atomic_Prop::make()
