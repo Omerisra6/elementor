@@ -606,59 +606,7 @@ abstract class Widget_Base extends Element_Base {
 	 * @access public
 	 */
 	public function render_content() {
-		/**
-		 * Before widget render content.
-		 *
-		 * Fires before Elementor widget is being rendered.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param Widget_Base $this The current widget.
-		 */
-		do_action( 'elementor/widget/before_render_content', $this );
-
-		ob_start();
-
-		$skin = $this->get_current_skin();
-		if ( $skin ) {
-			$skin->set_parent( $this );
-			$skin->render_by_mode();
-		} else {
-			$this->render_by_mode();
-		}
-
-		$widget_content = ob_get_clean();
-
-		if ( empty( $widget_content ) ) {
-			return;
-		}
-		?>
-		<div class="elementor-widget-container">
-			<?php
-			if ( $this->is_widget_first_render( $this->get_group_name() ) ) {
-				$this->register_runtime_widget( $this->get_group_name() );
-			}
-
-			// $this->print_widget_css();
-
-			// get_name
-
-			/**
-			 * Render widget content.
-			 *
-			 * Filters the widget content before it's rendered.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param string      $widget_content The content of the widget.
-			 * @param Widget_Base $this           The widget.
-			 */
-			$widget_content = apply_filters( 'elementor/widget/render_content', $widget_content, $this );
-
-			echo $widget_content; // XSS ok.
-			?>
-		</div>
-		<?php
+		$this->render();
 	}
 
 	protected function is_widget_first_render( $widget_name ) {
@@ -701,7 +649,6 @@ abstract class Widget_Base extends Element_Base {
 	 */
 	public function before_render() {
 		?>
-		<div <?php $this->print_render_attribute_string( '_wrapper' ); ?>>
 		<?php
 	}
 
@@ -715,7 +662,6 @@ abstract class Widget_Base extends Element_Base {
 	 */
 	public function after_render() {
 		?>
-		</div>
 		<?php
 	}
 

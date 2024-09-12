@@ -172,7 +172,7 @@ class Container extends Element_Base {
 	protected function content_template() {
 		?>
 		<# if ( 'boxed' === settings.content_width ) { #>
-			<div class="e-con-inner {{ settings?.classes?.value.join( ' ' ) || '' }}">
+			<div class=" {{ settings?.classes?.value.join( ' ' ) || '' }} e-con-inner">
 		<#
 		}
 		if ( settings.background_video_link ) {
@@ -300,10 +300,7 @@ class Container extends Element_Base {
 			$this->add_link_attributes( '_wrapper', $link );
 		}
 
-		?><<?php $this->print_html_tag(); ?> <?php $this->print_render_attribute_string( '_wrapper' ); ?>>
-		<?php
 		if ( $this->is_boxed_container( $settings ) ) { ?>
-			<div class="e-con-inner">
 		<?php }
 
 		$this->render_video_background();
@@ -333,14 +330,12 @@ class Container extends Element_Base {
 	public function after_render() {
 		$settings = $this->get_settings_for_display();
 		if ( $this->is_boxed_container( $settings ) ) { ?>
-			</div>
+
 		<?php } ?>
 
 		<?php if ( ! empty( $settings['classes'] ) ) { ?>
 			</div>
 		<?php } ?>
-
-		</<?php $this->print_html_tag(); ?>>
 		<?php
 	}
 
