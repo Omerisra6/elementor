@@ -1472,6 +1472,10 @@ abstract class Element_Base extends Controls_Stack {
 		}
 
 		foreach ( $children_data as $child_data ) {
+			if ( is_string( $child_data ) ){
+				var_dump($child_data);
+				die;
+			}
 			if ( ! $child_data ) {
 				continue;
 			}

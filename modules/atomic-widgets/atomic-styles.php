@@ -97,10 +97,6 @@ class Atomic_Styles {
 	}
 
 	private function parse_element_style( Post $post, Element_Base $element ) {
-		if ( ! ( $element instanceof Atomic_Widget_Base ) || Post::class !== get_class( $post ) ) {
-			return;
-		}
-
 		$styles = $element->get_raw_data()['styles'];
 
 		if ( empty( $styles ) ) {

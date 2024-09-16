@@ -5,6 +5,8 @@ use Elementor\Modules\AtomicWidgets\Controls\Section;
 use Elementor\Modules\AtomicWidgets\Controls\Types\Select_Control;
 use Elementor\Modules\AtomicWidgets\Controls\Types\Textarea_Control;
 use Elementor\Modules\AtomicWidgets\Base\Atomic_Widget_Base;
+use Elementor\Modules\AtomicWidgets\PropTypes\Classes_Prop_Type;
+use Elementor\Modules\AtomicWidgets\PropTypes\String_Prop_Type;
 use Elementor\Modules\AtomicWidgets\Schema\Atomic_Prop;
 use Elementor\Modules\AtomicWidgets\Schema\Constraints\Enum;
 use Elementor\Utils;
@@ -59,12 +61,10 @@ class Atomic_Text extends Atomic_Widget_Base {
 
 	protected static function define_props_schema(): array {
 		return [
-			'classes' => Atomic_Prop::make()
-				->type( 'classes' )
+			'classes' => Classes_Prop_Type::make()
 				->default( [] ),
 
-			'text' => Atomic_Prop::make()
-				->string()
+			'text' => String_Prop_Type::make()
 				->default( __( 'Your Text Here', 'elementor' ) ),
 		];
 	}

@@ -6,7 +6,6 @@ use Elementor\Core\Base\Module as BaseModule;
 use Elementor\Core\Experiments\Manager as Experiments_Manager;
 use Elementor\Modules\AtomicWidgets\PropsResolver\SettingsTransformers\Classes_Transformer;
 use Elementor\Modules\AtomicWidgets\PropsResolver\Transformers_Registry;
-use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Container;
 use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Heading;
 use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Image;
 use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Text;
@@ -67,7 +66,6 @@ class Module extends BaseModule {
 		$widgets_manager->register( new Atomic_Heading() );
 		$widgets_manager->register( new Atomic_Image() );
 		$widgets_manager->register( new Atomic_Text() );
-		$widgets_manager->register( new Atomic_Container() );
 	}
 
 	private function register_transformers( Transformers_Registry $transformers ) {

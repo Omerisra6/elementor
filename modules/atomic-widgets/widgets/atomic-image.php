@@ -4,6 +4,7 @@ namespace Elementor\Modules\AtomicWidgets\Widgets;
 use Elementor\Modules\AtomicWidgets\PropTypes\Classes_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Image_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\String_Prop_Type;
+use Elementor\Modules\AtomicWidgets\PropTypes\Url_Prop_Type;
 use Elementor\Utils;
 use Elementor\Modules\AtomicWidgets\Controls\Section;
 use Elementor\Modules\AtomicWidgets\Controls\Types\Select_Control;
@@ -30,12 +31,12 @@ class Atomic_Image extends Atomic_Widget_Base {
 	protected function render() {
 		$settings = $this->get_atomic_settings();
 
-		if ( ! isset( $settings['image'] ) ) {
+		if ( ! isset( $settings['url'] ) ) {
 			return;
 		}
 
 		$attrs = array_filter( array_merge(
-			$settings['image'],
+			[ 'src' => $settings['url'] ],
 			[ 'class' => $settings['classes'] ?? '' ]
 		) );
 
@@ -128,18 +129,14 @@ class Atomic_Image extends Atomic_Widget_Base {
 			'classes' => Classes_Prop_Type::make()
 				->default( [] ),
 
-			'image' => Image_Prop_Type::make()
+			'url' => Url_Prop_Type::make()
 				->default( [
-					'url' => Utils::get_placeholder_image_src(),
+					Utils::get_placeholder_image_src(),
 				] ),
 
 			'image_size' => String_Prop_Type::make()
 				->enum( $image_sizes )
 				->default( 'full' ),
-
-			'classes' => Atomic_Prop::make()
-				->type( 'classes' )
-				->default( [] ),
 		];
 	}
 }
