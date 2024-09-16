@@ -172,7 +172,7 @@ class Container extends Element_Base {
 	protected function content_template() {
 		?>
 		<# if ( 'boxed' === settings.content_width ) { #>
-			<div class=" {{ settings?.classes?.value.join( ' ' ) || '' }} e-con-inner">
+			<div class="e-con-inner {{ settings?.classes?.value.join( ' ' ) || '' }}">
 		<#
 		}
 		if ( settings.background_video_link ) {

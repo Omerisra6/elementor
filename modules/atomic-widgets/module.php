@@ -35,7 +35,6 @@ class Module extends BaseModule {
 
 		$this->register_experiment();
 
-		if ( Plugin::$instance->experiments->is_feature_active( self::EXPERIMENT_NAME ) ) {
 			( new Dynamic_Tags() )->register_hooks();
 			( new Atomic_Styles() )->register_hooks();
 
@@ -44,7 +43,7 @@ class Module extends BaseModule {
 			add_action( 'elementor/atomic-widgets/settings/transformers/register', fn ( $transformers ) => $this->register_transformers( $transformers ) );
 
 			add_action( 'elementor/editor/after_enqueue_scripts', fn() => $this->enqueue_scripts() );
-		}
+
 	}
 
 	private function register_experiment() {
