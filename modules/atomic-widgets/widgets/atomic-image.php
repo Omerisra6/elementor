@@ -37,7 +37,7 @@ class Atomic_Image extends Atomic_Widget_Base {
 
 		?> <img
 			class='<?php echo esc_attr( $settings['classes'] ); ?>'
-			src='<?php echo esc_url( $image_url ); ?>'
+			src='<?php echo esc_url( $settings['url'] ); ?>'
 			alt='Atomic Image'
 		/>
 		<?php
