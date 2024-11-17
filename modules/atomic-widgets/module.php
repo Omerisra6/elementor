@@ -35,6 +35,8 @@ use Elementor\Modules\AtomicWidgets\PropTypes\Url_Prop_Type;
 use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Heading;
 use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Image;
 use Elementor\Modules\AtomicWidgets\Styles\Atomic_Styles;
+use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Text;
+use Elementor\Modules\AtomicWidgets\Widgets\Atomic_Video;
 use Elementor\Plugin;
 use Elementor\Widgets_Manager;
 
@@ -95,6 +97,8 @@ class Module extends BaseModule {
 	private function register_widgets( Widgets_Manager $widgets_manager ) {
 		$widgets_manager->register( new Atomic_Heading() );
 		$widgets_manager->register( new Atomic_Image() );
+		$widgets_manager->register( new Atomic_Text() );
+		$widgets_manager->register( new Atomic_Video() );
 	}
 
 	private function register_settings_transformers( Transformers_Registry $transformers ) {
