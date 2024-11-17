@@ -34,7 +34,7 @@ class Atomic_Video extends Atomic_Widget_Base {
 		$settings = $this->get_atomic_settings();
 
 		$src = $settings['src'];
-		$video_controls = $settings['video_controls'];
+		$show_controls = $settings['show_controls'];
 
 		$attrs = array_filter( [
 			'class' => $settings['classes'] ?? '',
@@ -48,7 +48,7 @@ class Atomic_Video extends Atomic_Widget_Base {
 		echo sprintf(
 			'<video %1$s %2$s>%3$s</video>',
 			Utils::render_html_attributes( $attrs ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			$video_controls ? 'controls' : '', // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$show_controls ? 'controls' : '', // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$source, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
@@ -61,7 +61,7 @@ class Atomic_Video extends Atomic_Widget_Base {
 					Url_Control::bind_to( 'src' )
 						->set_label( __( 'SRC', 'elementor' ) )
 						->set_placeholder( __( 'Type your video source here', 'elementor' ) ),
-					Switch_Control::bind_to( 'video_controls' )
+					Switch_Control::bind_to( 'show_controls' )
 						->set_label( __( 'Video Controls', 'elementor' ) ),
 					Switch_Control::bind_to( 'autoplay' )
 						->set_label( __( 'Autoplay', 'elementor' ) ),
@@ -77,7 +77,7 @@ class Atomic_Video extends Atomic_Widget_Base {
 			'src' => Url_Prop_Type::make()
 				->default( 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' ),
 
-			'video_controls' => Boolean_Prop_Type::make()
+			'show_controls' => Boolean_Prop_Type::make()
 				->default( true ),
 
 			'autoplay' => Boolean_Prop_Type::make()
