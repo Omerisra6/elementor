@@ -2,14 +2,11 @@
 namespace Elementor\Modules\AtomicWidgets\Widgets;
 
 use Elementor\Modules\AtomicWidgets\Controls\Section;
-use Elementor\Modules\AtomicWidgets\Controls\Types\Text_Control;
-use Elementor\Modules\AtomicWidgets\Controls\Types\Textarea_Control;
 use Elementor\Modules\AtomicWidgets\Base\Atomic_Widget_Base;
 use Elementor\Modules\AtomicWidgets\Controls\Types\Switch_Control;
 use Elementor\Modules\AtomicWidgets\Controls\Types\Url_Control;
 use Elementor\Modules\AtomicWidgets\PropTypes\Classes_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Primitives\Boolean_Prop_Type;
-use Elementor\Modules\AtomicWidgets\PropTypes\Primitives\String_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Url_Prop_Type;
 use Elementor\Utils;
 
@@ -27,7 +24,7 @@ class Atomic_Video extends Atomic_Widget_Base {
 	}
 
 	public function get_icon() {
-		return 'eicon-video';
+		return 'eicon-youtube';
 	}
 
 	protected function render() {
@@ -35,6 +32,7 @@ class Atomic_Video extends Atomic_Widget_Base {
 
 		$src = $settings['src'];
 		$show_controls = $settings['show_controls'];
+		$autoplay = $settings['autoplay'];
 
 		$attrs = array_filter( [
 			'class' => $settings['classes'] ?? '',
@@ -46,9 +44,10 @@ class Atomic_Video extends Atomic_Widget_Base {
 		);
 
 		echo sprintf(
-			'<video %1$s %2$s>%3$s</video>',
+			'<video %1$s %2$s %3$s>%4$s</video>',
 			Utils::render_html_attributes( $attrs ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$show_controls ? 'controls' : '', // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$autoplay ? 'autoplay' : '', // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$source, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
@@ -81,7 +80,7 @@ class Atomic_Video extends Atomic_Widget_Base {
 				->default( true ),
 
 			'autoplay' => Boolean_Prop_Type::make()
-				->default( false ),
+				->default( true ),
 		];
 	}
 }
