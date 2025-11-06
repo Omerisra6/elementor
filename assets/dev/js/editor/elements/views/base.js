@@ -280,12 +280,7 @@ BaseElementView = BaseContainer.extend( {
 
 	getHandlesOverlay() {
 		const elementType = this.getElementType();
-
 		if ( ! elementor.userCan( 'design' ) && elementType !== 'widget' ) {
-			return;
-		}
-
-		if ( ! this.getContainer().isEditable() ) {
 			return;
 		}
 
@@ -1165,10 +1160,6 @@ BaseElementView = BaseContainer.extend( {
 
 		// Init the draggable only for Containers and their children.
 		if ( ! this.$el.hasClass( '.e-con' ) && ! this.$el.parents( '.e-con' ).length ) {
-			return;
-		}
-
-		if ( ! this.getContainer().isEditable() ) {
 			return;
 		}
 

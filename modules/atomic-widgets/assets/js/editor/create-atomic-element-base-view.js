@@ -302,7 +302,7 @@ export default function createAtomicElementBaseView( type ) {
 		},
 
 		isDroppingAllowed() {
-			return this.getContainer().isEditable();
+			return true;
 		},
 
 		behaviors() {

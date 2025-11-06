@@ -187,14 +187,13 @@ class Widget_Tabs extends Widget_Base {
 				'options' => [
 					'vertical' => [
 						'title' => esc_html__( 'Vertical', 'elementor' ),
-						'icon' => 'eicon-h-align-left',
+						'icon' => 'eicon-h-align-' . ( is_rtl() ? 'right' : 'left' ),
 					],
 					'horizontal' => [
 						'title' => esc_html__( 'Horizontal', 'elementor' ),
 						'icon' => 'eicon-v-align-top',
 					],
 				],
-				'classes' => 'elementor-control-start-end',
 				'prefix_class' => 'elementor-tabs-view-',
 				'separator' => 'before',
 			]
@@ -423,23 +422,18 @@ class Widget_Tabs extends Widget_Base {
 				'label' => esc_html__( 'Alignment', 'elementor' ),
 				'type' => Controls_Manager::CHOOSE,
 				'options' => [
-					'start' => [
-						'title' => esc_html__( 'Start', 'elementor' ),
+					'left' => [
+						'title' => esc_html__( 'Left', 'elementor' ),
 						'icon' => 'eicon-text-align-left',
 					],
 					'center' => [
 						'title' => esc_html__( 'Center', 'elementor' ),
 						'icon' => 'eicon-text-align-center',
 					],
-					'end' => [
-						'title' => esc_html__( 'End', 'elementor' ),
+					'right' => [
+						'title' => esc_html__( 'Right', 'elementor' ),
 						'icon' => 'eicon-text-align-right',
 					],
-				],
-				'classes' => 'elementor-control-start-end',
-				'selectors_dictionary' => [
-					'left' => is_rtl() ? 'end' : 'start',
-					'right' => is_rtl() ? 'start' : 'end',
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementor-tab-title' => 'text-align: {{VALUE}};',

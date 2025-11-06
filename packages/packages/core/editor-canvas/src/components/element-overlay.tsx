@@ -4,7 +4,6 @@ import { FloatingPortal, useHover, useInteractions } from '@floating-ui/react';
 
 import { useBindReactPropsToElement } from '../hooks/use-bind-react-props-to-element';
 import { useFloatingOnElement } from '../hooks/use-floating-on-element';
-import { useHasOverlapping } from '../hooks/use-has-overlapping';
 
 export const CANVAS_WRAPPER_ID = 'elementor-preview-responsive-wrapper';
 
@@ -26,14 +25,12 @@ const OverlayBox = styled( Box, {
 export function ElementOverlay( { element, isSelected, id }: Props ) {
 	const { context, floating, isVisible } = useFloatingOnElement( { element, isSelected } );
 	const { getFloatingProps, getReferenceProps } = useInteractions( [ useHover( context ) ] );
-	const hasOverlapping = useHasOverlapping();
 
 	useBindReactPropsToElement( element, getReferenceProps );
 	const isSmallerOffset = element.offsetHeight <= 1;
 
 	return (
-		isVisible &&
-		! hasOverlapping && (
+		isVisible && (
 			<FloatingPortal id={ CANVAS_WRAPPER_ID }>
 				<OverlayBox
 					ref={ floating.setRef }

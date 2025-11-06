@@ -1,5 +1,4 @@
 import { type V1Element } from "@elementor/editor-elements";
-import type { InteractionsConfig } from '@elementor/editor-editing-panel';
 
 declare global {
 	interface Window {
@@ -21,7 +20,6 @@ declare global {
 			};
 			getContainer?: (id: string) => V1Element | undefined;
 		};
-		ElementorInteractionsConfig?: InteractionsConfig;
 	}
 }
 

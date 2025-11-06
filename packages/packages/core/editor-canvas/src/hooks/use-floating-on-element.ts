@@ -8,7 +8,6 @@ type Options = {
 
 export function useFloatingOnElement( { element, isSelected }: Options ) {
 	const [ isOpen, setIsOpen ] = useState( false );
-	const sizeModifier = 2;
 
 	const { refs, floatingStyles, context } = useFloating( {
 		// Must be controlled for interactions (like hover) to work.
@@ -19,17 +18,15 @@ export function useFloatingOnElement( { element, isSelected }: Options ) {
 
 		middleware: [
 			// Match the floating element's size to the reference element.
-
-			size( () => {
-				return {
-					apply( { elements, rects } ) {
-						Object.assign( elements.floating.style, {
-							width: `${ rects.reference.width + sizeModifier }px`,
-							height: `${ rects.reference.height + sizeModifier }px`,
-						} );
-					},
-				};
+			size( {
+				apply( { elements, rects } ) {
+					Object.assign( elements.floating.style, {
+						width: `${ rects.reference.width + 2 }px`,
+						height: `${ rects.reference.height + 2 }px`,
+					} );
+				},
 			} ),
+
 			// Center the floating element on the reference element.
 			offset( ( { rects } ) => -rects.reference.height / 2 - rects.floating.height / 2 ),
 		],

@@ -22,11 +22,7 @@
 
 				.elementor-image-box-wrapper {
 					text-align: end;
-					flex-direction: row-reverse;
-
-					[dir="rtl"] & { // BC for RTL direction.
-						flex-direction: row;
-					}
+					flex-direction: getValueByDirection(row-reverse, row);
 				}
 			}
 
@@ -34,11 +30,7 @@
 
 				.elementor-image-box-wrapper {
 					text-align: start;
-					flex-direction: row;
-
-					[dir="rtl"] & { // BC for RTL direction.
-						flex-direction: row-reverse;
-					}
+					flex-direction: getValueByDirection(row, row-reverse);
 				}
 			}
 

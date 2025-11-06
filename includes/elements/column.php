@@ -731,27 +731,22 @@ class Element_Column extends Element_Base {
 				'label' => esc_html__( 'Text Align', 'elementor' ),
 				'type' => Controls_Manager::CHOOSE,
 				'options' => [
-					'start' => [
-						'title' => esc_html__( 'Start', 'elementor' ),
+					'left' => [
+						'title' => esc_html__( 'Left', 'elementor' ),
 						'icon' => 'eicon-text-align-left',
 					],
 					'center' => [
 						'title' => esc_html__( 'Center', 'elementor' ),
 						'icon' => 'eicon-text-align-center',
 					],
-					'end' => [
-						'title' => esc_html__( 'End', 'elementor' ),
+					'right' => [
+						'title' => esc_html__( 'Right', 'elementor' ),
 						'icon' => 'eicon-text-align-right',
 					],
 					'justify' => [
 						'title' => esc_html__( 'Justified', 'elementor' ),
 						'icon' => 'eicon-text-align-justify',
 					],
-				],
-				'classes' => 'elementor-control-start-end',
-				'selectors_dictionary' => [
-					'left' => is_rtl() ? 'end' : 'start',
-					'right' => is_rtl() ? 'start' : 'end',
 				],
 				'selectors' => [
 					'{{WRAPPER}} > .elementor-element-populated' => 'text-align: {{VALUE}};',

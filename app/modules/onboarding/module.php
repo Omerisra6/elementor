@@ -57,12 +57,6 @@ class Module extends BaseModule {
 		return $editor_assets_api->is_experiment_enabled( $experiment_key );
 	}
 
-	private function is_hello_theme_activated(): bool {
-		$current_theme = get_option( 'template' );
-		$hello_theme_variants = [ 'hello-elementor', 'hello-biz', 'hello-commerce', 'hello-theme' ];
-
-		return in_array( $current_theme, $hello_theme_variants, true );
-	}
 
 	private function get_editor_assets_api(): ?API {
 		if ( null !== $this->editor_assets_api ) {
@@ -121,7 +115,7 @@ class Module extends BaseModule {
 			'isLibraryConnected' => $library->is_connected(),
 			// Used to check if the Hello Elementor theme is installed but not activated.
 			'helloInstalled' => empty( $hello_theme_errors['theme_not_found'] ),
-			'helloActivated' => $this->is_hello_theme_activated(),
+			'helloActivated' => 'hello-elementor' === get_option( 'template' ),
 			// The "Use Hello theme on my site" checkbox should be checked by default only if this condition is met.
 			'helloOptOut' => count( $pages_and_posts->posts ) < 5,
 			'siteName' => esc_html( $site_name ),

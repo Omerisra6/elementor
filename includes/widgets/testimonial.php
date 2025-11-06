@@ -209,6 +209,8 @@ class Widget_Testimonial extends Widget_Base {
 			]
 		);
 
+		$aside = is_rtl() ? 'right' : 'left';
+
 		$this->add_control(
 			'testimonial_image_position',
 			[
@@ -218,7 +220,7 @@ class Widget_Testimonial extends Widget_Base {
 				'options' => [
 					'aside' => [
 						'title' => esc_html__( 'Aside', 'elementor' ),
-						'icon' => 'eicon-h-align-left',
+						'icon' => 'eicon-h-align-' . $aside,
 					],
 					'top' => [
 						'title' => esc_html__( 'Top', 'elementor' ),
@@ -230,7 +232,6 @@ class Widget_Testimonial extends Widget_Base {
 					'testimonial_image[url]!' => '',
 				],
 				'separator' => 'before',
-				'classes' => 'elementor-control-start-end',
 				'style_transfer' => true,
 			]
 		);
@@ -242,23 +243,18 @@ class Widget_Testimonial extends Widget_Base {
 				'type' => Controls_Manager::CHOOSE,
 				'default' => 'center',
 				'options' => [
-					'start' => [
-						'title' => esc_html__( 'Start', 'elementor' ),
+					'left'    => [
+						'title' => esc_html__( 'Left', 'elementor' ),
 						'icon' => 'eicon-text-align-left',
 					],
 					'center' => [
 						'title' => esc_html__( 'Center', 'elementor' ),
 						'icon' => 'eicon-text-align-center',
 					],
-					'end' => [
-						'title' => esc_html__( 'End', 'elementor' ),
+					'right' => [
+						'title' => esc_html__( 'Right', 'elementor' ),
 						'icon' => 'eicon-text-align-right',
 					],
-				],
-				'classes' => 'elementor-control-start-end',
-				'selectors_dictionary' => [
-					'left' => is_rtl() ? 'end' : 'start',
-					'right' => is_rtl() ? 'start' : 'end',
 				],
 				'selectors' => [
 					'{{WRAPPER}} .elementor-testimonial-wrapper' => 'text-align: {{VALUE}}',

@@ -1,79 +1,34 @@
 import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
-import { useElementInteractions } from '@elementor/editor-elements';
-import { SessionStorageProvider } from '@elementor/session';
-
-import { useElement } from '../contexts/element-context';
-import { InteractionsProvider, useInteractionsContext } from '../contexts/interaction-context';
-import { usePopupStateContext } from '../contexts/popup-state-contex';
-import { EmptyState } from '../interactions/components/empty-state';
-import { PredefinedInteractionsList } from '../interactions/components/interactions-list';
-import { SectionsList } from './sections-list';
+import { SwipeIcon } from '@elementor/icons';
+import { Button, Stack, Typography } from '@elementor/ui';
+import { __ } from '@wordpress/i18n';
 
 export const InteractionsTab = () => {
-	const { element } = useElement();
-
-	const existingInteractions = useElementInteractions( element.id );
-	const { triggerDefaultOpen } = usePopupStateContext();
-
-	const [ showInteractions, setShowInteractions ] = useState( () => {
-		return !! JSON.parse( existingInteractions || '[]' ).length;
-	} );
-
 	return (
-		<SessionStorageProvider prefix={ element.id }>
-			{ showInteractions ? (
-				<SectionsList>
-					<InteractionsProvider>
-						<InteractionsContent />
-					</InteractionsProvider>
-				</SectionsList>
-			) : (
-				<EmptyState
-					onCreateInteraction={ () => {
-						setShowInteractions( true );
-						triggerDefaultOpen();
-					} }
-				/>
-			) }
-		</SessionStorageProvider>
+		<Stack
+			alignItems="center"
+			justifyContent="center"
+			height="100%"
+			color="text.secondary"
+			sx={ { p: 2.5, pt: 8, pb: 5.5 } }
+			gap={ 1.5 }
+		>
+			<SwipeIcon fontSize="large" />
+
+			<Typography align="center" variant="subtitle2">
+				{ __( 'Animate elements with Interactions', 'elementor' ) }
+			</Typography>
+
+			<Typography align="center" variant="caption" maxWidth="170px">
+				{ __(
+					'Add entrance animations and effects triggered by user interactions such as click, hover, or scroll.',
+					'elementor'
+				) }
+			</Typography>
+
+			<Button variant="outlined" color="secondary" size="small" sx={ { mt: 1 } }>
+				{ __( 'Create an interaction', 'elementor' ) }
+			</Button>
+		</Stack>
 	);
 };
-
-function InteractionsContent() {
-	const { interactions, setInteractions } = useInteractionsContext();
-
-	const applyInteraction = useCallback(
-		( interaction: string ) => {
-			const newInteractions = [
-				{
-					animation: {
-						animation_type: 'full-preset',
-						animation_id: interaction,
-					},
-				},
-			];
-
-			setInteractions( JSON.stringify( newInteractions ) );
-		},
-		[ setInteractions ]
-	);
-
-	const selectedInteraction = useMemo( () => {
-		try {
-			const parsed = JSON.parse( interactions || '[]' );
-			return parsed[ 0 ]?.animation?.animation_id || '';
-		} catch {
-			return '';
-		}
-	}, [ interactions ] );
-
-	return (
-		<SectionsList>
-			<PredefinedInteractionsList
-				selectedInteraction={ selectedInteraction }
-				onSelectInteraction={ applyInteraction }
-			/>
-		</SectionsList>
-	);
-}
