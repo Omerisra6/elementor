@@ -1,0 +1,22 @@
+<button
+	class="e-con e-atomic-element {{ base_styles.base }} {{ editor_classes | default('') }} {{ settings.classes | default([]) | join(' ') }}"
+	role="tab"
+	tabindex="{{ is_active ? '0' : '-1' }}"
+	aria-selected="{{ is_active ? 'true' : 'false' }}"
+	x-bind="tab"
+	x-ref="{{ id }}"
+	id="{{ tab_id }}"
+	aria-controls="{{ tab_content_id }}"
+	data-e-type="e-tab"
+	data-element_type="e-tab"
+	data-id="{{ id }}"
+	{{ editor_attributes | default('') | raw }}
+	{{ settings.attributes | default('') | raw }}
+>
+	{% for type, type_children in children %}
+		{% for child_html in type_children %}
+			{{ child_html | raw }}
+		{% endfor %}
+	{% endfor %}
+</button>
+

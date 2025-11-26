@@ -12,5 +12,9 @@ export {
 	createTemplatedElementView,
 	type CreateTemplatedElementTypeOptions,
 } from './legacy/create-templated-element-type';
+export {
+	createNestedTemplatedElementView,
+	type CreateNestedTemplatedElementTypeOptions,
+} from './legacy/create-nested-templated-element-type';
 export { getCanvasIframeDocument } from './sync/get-canvas-iframe-document';
 export * from './legacy/types';

@@ -2,9 +2,8 @@
 namespace Elementor\Modules\AtomicWidgets\Elements\Atomic_Tabs;
 
 use Elementor\Modules\AtomicWidgets\Elements\Atomic_Element_Base;
-use Elementor\Modules\AtomicWidgets\PropTypes\Primitives\Boolean_Prop_Type;
+use Elementor\Modules\AtomicWidgets\Elements\Has_Nested_Template;
 use Elementor\Modules\AtomicWidgets\PropTypes\Primitives\String_Prop_Type;
-use Elementor\Modules\AtomicWidgets\PropTypes\Size_Prop_Type;
 use Elementor\Modules\AtomicWidgets\Styles\Style_Definition;
 use Elementor\Modules\AtomicWidgets\Styles\Style_Variant;
 use Elementor\Modules\AtomicWidgets\Controls\Section;
@@ -12,12 +11,13 @@ use Elementor\Modules\AtomicWidgets\Controls\Types\Text_Control;
 use Elementor\Modules\AtomicWidgets\PropTypes\Classes_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Attributes_Prop_Type;
 
-
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 class Atomic_Tabs_Content_Area extends Atomic_Element_Base {
+	use Has_Nested_Template;
+
 	const BASE_STYLE_KEY = 'base';
 
 	public static function get_type() {
@@ -81,25 +81,20 @@ class Atomic_Tabs_Content_Area extends Atomic_Element_Base {
 		];
 	}
 
-	protected function add_render_attributes() {
-		parent::add_render_attributes();
-		$settings = $this->get_atomic_settings();
-		$base_style_class = $this->get_base_styles_dictionary()[ static::BASE_STYLE_KEY ];
-		$initial_attributes = $this->define_initial_attributes();
-
-		$attributes = [
-			'class' => [
-				'e-con',
-				'e-atomic-element',
-				$base_style_class,
-				...( $settings['classes'] ?? [] ),
-			],
+	protected function get_templates(): array {
+		return [
+			'elementor/elements/atomic-tabs-content-area' => __DIR__ . '/atomic-tabs-content-area.html.twig',
 		];
+	}
 
-		if ( ! empty( $settings['_cssid'] ) ) {
-			$attributes['id'] = esc_attr( $settings['_cssid'] );
-		}
-
-		$this->add_render_attribute( '_wrapper', array_merge( $initial_attributes, $attributes ) );
+	protected function build_template_context(): array {
+		return [
+			'id' => $this->get_id(),
+			'type' => $this->get_name(),
+			'settings' => $this->get_atomic_settings(),
+			'base_styles' => $this->get_base_styles_dictionary(),
+			'interactions' => $this->get_interactions_ids(),
+			'children' => $this->render_children_to_html(),
+		];
 	}
 }

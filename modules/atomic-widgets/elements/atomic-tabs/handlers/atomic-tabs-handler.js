@@ -10,6 +10,7 @@ register( {
 	callback: ( { element, settings } ) => {
 		const tabsId = element.dataset.id;
 
+		console.log( '$$$run', tabsId, element );
 		Alpine.data( `eTabs${ tabsId }`, () => ( {
 			activeTab: settings[ 'default-active-tab' ],
 

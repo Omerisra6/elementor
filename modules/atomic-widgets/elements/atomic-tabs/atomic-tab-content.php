@@ -2,11 +2,9 @@
 namespace Elementor\Modules\AtomicWidgets\Elements\Atomic_Tabs;
 
 use Elementor\Modules\AtomicWidgets\Elements\Atomic_Element_Base;
+use Elementor\Modules\AtomicWidgets\Elements\Has_Nested_Template;
 use Elementor\Modules\AtomicWidgets\PropTypes\Primitives\String_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Size_Prop_Type;
-use Elementor\Modules\AtomicWidgets\PropTypes\Selection_Size_Prop_Type;
-use Elementor\Modules\AtomicWidgets\PropTypes\Transition_Prop_Type;
-use Elementor\Modules\AtomicWidgets\PropTypes\Key_Value_Prop_Type;
 use Elementor\Modules\AtomicWidgets\Styles\Style_Definition;
 use Elementor\Modules\AtomicWidgets\Styles\Style_Variant;
 use Elementor\Modules\AtomicWidgets\Styles\Style_States;
@@ -15,12 +13,13 @@ use Elementor\Modules\AtomicWidgets\PropTypes\Classes_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Attributes_Prop_Type;
 use Elementor\Modules\AtomicWidgets\Render_Context;
 
-
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 class Atomic_Tab_Content extends Atomic_Element_Base {
+	use Has_Nested_Template;
+
 	const BASE_STYLE_KEY = 'base';
 
 	public static function get_type() {
@@ -93,47 +92,31 @@ class Atomic_Tab_Content extends Atomic_Element_Base {
 		];
 	}
 
-	protected function define_initial_attributes() {
+	protected function get_templates(): array {
 		return [
-			'role' => 'tabpanel',
+			'elementor/elements/atomic-tab-content' => __DIR__ . '/atomic-tab-content.html.twig',
 		];
 	}
 
-	protected function add_render_attributes() {
-		parent::add_render_attributes();
-		$settings = $this->get_atomic_settings();
-		$base_style_class = $this->get_base_styles_dictionary()[ static::BASE_STYLE_KEY ];
-		$initial_attributes = $this->define_initial_attributes();
-
+	protected function build_template_context(): array {
 		$tabs_context = Render_Context::get( Atomic_Tabs::class );
-		$default_active_tab = $tabs_context['default-active-tab'];
-		$get_tab_content_index = $tabs_context['get-tab-content-index'];
-		$tabs_id = $tabs_context['tabs-id'];
+		$default_active_tab = $tabs_context['default-active-tab'] ?? 0;
+		$get_tab_content_index = $tabs_context['get-tab-content-index'] ?? fn() => 0;
+		$tabs_id = $tabs_context['tabs-id'] ?? '';
 
 		$index = $get_tab_content_index( $this->get_id() );
 		$is_active = $default_active_tab === $index;
 
-		$attributes = [
-			'class' => [
-				'e-con',
-				'e-atomic-element',
-				$base_style_class,
-				...( $settings['classes'] ?? [] ),
-			],
-			'x-bind' => 'tabContent',
-			'id' => Atomic_Tabs::get_tab_content_id( $tabs_id, $index ),
-			'aria-labelledby' => Atomic_Tabs::get_tab_id( $tabs_id, $index ),
+		return [
+			'id' => $this->get_id(),
+			'type' => $this->get_name(),
+			'settings' => $this->get_atomic_settings(),
+			'base_styles' => $this->get_base_styles_dictionary(),
+			'interactions' => $this->get_interactions_ids(),
+			'children' => $this->render_children_to_html(),
+			'is_active' => $is_active,
+			'tab_id' => Atomic_Tabs::get_tab_id( $tabs_id, $index ),
+			'tab_content_id' => Atomic_Tabs::get_tab_content_id( $tabs_id, $index ),
 		];
-
-		if ( ! $is_active ) {
-			$attributes['hidden'] = 'true';
-			$attributes['style'] = 'display: none;';
-		}
-
-		if ( ! empty( $settings['_cssid'] ) ) {
-			$attributes['id'] = esc_attr( $settings['_cssid'] );
-		}
-
-		$this->add_render_attribute( '_wrapper', array_merge( $initial_attributes, $attributes ) );
 	}
 }

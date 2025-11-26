@@ -2,6 +2,7 @@
 namespace Elementor\Modules\AtomicWidgets\Elements\Atomic_Tabs;
 
 use Elementor\Modules\AtomicWidgets\Elements\Atomic_Element_Base;
+use Elementor\Modules\AtomicWidgets\Elements\Has_Nested_Template;
 use Elementor\Modules\AtomicWidgets\PropTypes\Primitives\Number_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Primitives\String_Prop_Type;
 use Elementor\Modules\AtomicWidgets\PropTypes\Size_Prop_Type;
@@ -18,12 +19,12 @@ use Elementor\Modules\AtomicWidgets\Loader\Frontend_Assets_Loader;
 use Elementor\Utils;
 use Elementor\Plugin;
 
-
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 class Atomic_Tabs extends Atomic_Element_Base {
+	use Has_Nested_Template;
 	const BASE_STYLE_KEY = 'base';
 	const ELEMENT_TYPE_TABS_MENU = 'e-tabs-menu';
 	const ELEMENT_TYPE_TABS_CONTENT_AREA = 'e-tabs-content-area';
@@ -155,6 +156,23 @@ class Atomic_Tabs extends Atomic_Element_Base {
 		];
 	}
 
+	protected function get_templates(): array {
+		return [
+			'elementor/elements/atomic-tabs' => __DIR__ . '/atomic-tabs.html.twig',
+		];
+	}
+
+	protected function build_template_context(): array {
+		return [
+			'id' => $this->get_id(),
+			'type' => $this->get_name(),
+			'settings' => $this->get_atomic_settings(),
+			'base_styles' => $this->get_base_styles_dictionary(),
+			'interactions' => $this->get_interactions_ids(),
+			'children' => $this->render_children_to_html(),
+		];
+	}
+
 	public function get_script_depends() {
 		if ( Plugin::$instance->preview->is_preview_mode() ) {
 			return [ 'elementor-tabs-handler', 'elementor-tabs-preview-handler' ];
@@ -223,33 +241,6 @@ class Atomic_Tabs extends Atomic_Element_Base {
 			'get-tab-content-index' => fn( $tab_content_id ) => $this->get_tab_content_index( $tab_content_id ),
 			'tabs-id' => $this->get_id(),
 		];
-	}
-
-	protected function add_render_attributes() {
-		parent::add_render_attributes();
-		$settings = $this->get_atomic_settings();
-		$base_style_class = $this->get_base_styles_dictionary()[ static::BASE_STYLE_KEY ];
-		$initial_attributes = $this->define_initial_attributes();
-
-		$default_active_tab = $settings['default-active-tab'] ?? 0;
-		$default_active_tab_id = static::get_tab_id( $this->get_id(), $default_active_tab );
-
-		$attributes = [
-			'class' => [
-				'e-con',
-				'e-atomic-element',
-				$base_style_class,
-				...( $settings['classes'] ?? [] ),
-			],
-			'x-data' => 'eTabs' . $this->get_id(),
-			'data-e-settings' => json_encode( [ 'default-active-tab' => esc_js( $default_active_tab_id ) ] ),
-		];
-
-		if ( ! empty( $settings['_cssid'] ) ) {
-			$attributes['id'] = esc_attr( $settings['_cssid'] );
-		}
-
-		$this->add_render_attribute( '_wrapper', array_merge( $initial_attributes, $attributes ) );
 	}
 
 	public static function get_tab_id( $tabs_id, $index ) {

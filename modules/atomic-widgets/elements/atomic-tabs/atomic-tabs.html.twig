@@ -1,0 +1,21 @@
+{% set e_settings = {
+    'default-active-tab': id ~ '-tab-' ~ settings['default-active-tab'],
+} %}
+
+<div
+	x-data="eTabs{{ id }}"
+	data-e-settings="{{ e_settings | json_encode | e('html_attr') }}"
+	class="e-con e-atomic-element {{ base_styles.base }} {{ editor_classes | default('') }} {{ settings.classes | default([]) | join(' ') }}"
+	{% if settings._cssid %}id="{{ settings._cssid }}"{% endif %}
+	data-e-type="e-tabs"
+	data-element_type="e-tabs"
+	data-id="{{ id }}"
+	{{ editor_attributes | default('') | raw }}
+	{{ settings.attributes | default('') | raw }}
+>
+	{% for type, type_children in children %}
+		{% for child_html in type_children %}
+			{{ child_html | raw }}
+		{% endfor %}
+	{% endfor %}
+</div>

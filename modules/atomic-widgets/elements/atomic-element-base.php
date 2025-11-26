@@ -41,7 +41,7 @@ abstract class Atomic_Element_Base extends Element_Base {
 		return [];
 	}
 
-	final public function get_initial_config() {
+	protected function get_initial_config() {
 		$config = parent::get_initial_config();
 		$props_schema = static::get_props_schema();
 

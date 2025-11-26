@@ -1,0 +1,20 @@
+<div
+	class="e-con e-atomic-element {{ base_styles.base }} {{ editor_classes | default('') }} {{ settings.classes | default([]) | join(' ') }}"
+	role="tabpanel"
+	x-bind="tabContent"
+	id="{{ tab_content_id }}"
+	aria-labelledby="{{ tab_id }}"
+	{% if not is_active %}hidden="true" style="display: none;"{% endif %}
+	data-e-type="e-tab-content"
+	data-element_type="e-tab-content"
+	data-id="{{ id }}"
+	{{ editor_attributes | default('') | raw }}
+	{{ settings.attributes | default('') | raw }}
+>
+	{% for type, type_children in children %}
+		{% for child_html in type_children %}
+			{{ child_html | raw }}
+		{% endfor %}
+	{% endfor %}
+</div>
+
