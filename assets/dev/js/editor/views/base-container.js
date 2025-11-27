@@ -93,7 +93,16 @@ module.exports = Marionette.CompositeView.extend( {
 		if ( options.edit && elementor.documents.getCurrent().history.getActive() ) {
 			// Ensure container is created. TODO: Open editor via UI hook after `document/elements/create`.
 			newView.getContainer();
-			newModel.trigger( 'request:edit', { scrollIntoView: options.scrollIntoView } );
+
+			const triggerEdit = () => {
+				newModel.trigger( 'request:edit', { scrollIntoView: options.scrollIntoView } );
+			};
+
+			if ( 'twig' === newView.getTemplateType?.() ) {
+				newModel.once( 'render:complete', triggerEdit );
+			} else {
+				triggerEdit();
+			}
 		}
 
 		return newView;

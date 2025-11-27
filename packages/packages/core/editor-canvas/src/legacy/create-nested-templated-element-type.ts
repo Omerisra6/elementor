@@ -67,15 +67,10 @@ function buildEditorAttributes( model: { get: ( key: 'id' ) => string; cid?: str
 		.join( ' ' );
 }
 
-function buildEditorClasses( model: { get: ( key: 'id' ) => string }, elementType: string ): string {
+function buildEditorClasses( model: { get: ( key: 'id' ) => string } ): string {
 	const id = model.get( 'id' );
 
-	return [
-		'elementor-element',
-		'elementor-element-edit-mode',
-		`elementor-element-${ id }`,
-		`${ elementType }-base`,
-	].join( ' ' );
+	return [ 'elementor-element', 'elementor-element-edit-mode', `elementor-element-${ id }` ].join( ' ' );
 }
 
 type AlpineInstance = {
@@ -92,6 +87,8 @@ interface NestedTwigView extends ElementView {
 	setElement: ( element: JQueryElement ) => void;
 	_renderTwigTemplate: () => Promise< void >;
 	_attachTwigContent: ( html: string ) => void;
+	_renderChildrenAsync: () => Promise< void >;
+	once: ( event: string, callback: () => void ) => void;
 }
 
 type JQueryElement = ReturnType< ElementView[ 'getDomElement' ] >;
@@ -134,14 +131,19 @@ export function createNestedTemplatedElementView( {
 			const process = signalizedProcess( this._abortController.signal )
 				.then( () => createBeforeRender( view ) )
 				.then( () => {
+					view.dispatchPreviewEvent( 'elementor/element/render' );
+
 					getPreviewAlpine()?.deferMutations();
 					return view._renderTwigTemplate();
 				} )
 				.then( () => {
-					view.dispatchPreviewEvent( 'elementor/element/render' );
-					view._renderChildren();
-					getPreviewAlpine()?.flushAndStopDeferringMutations();
+					return view._renderChildrenAsync();
+				} )
+				.then( () => {
 					createAfterRender( view );
+					getPreviewAlpine()?.flushAndStopDeferringMutations();
+
+					view.model.trigger( 'render:complete' );
 				} );
 
 			return process.execute();
@@ -162,7 +164,7 @@ export function createNestedTemplatedElementView( {
 				buildContext: ( context: TwigRenderContext ) => ( {
 					...context,
 					editor_attributes: buildEditorAttributes( view.model ),
-					editor_classes: buildEditorClasses( view.model, type ),
+					editor_classes: buildEditorClasses( view.model ),
 				} ),
 				attachContent: ( html: string ) => this._attachTwigContent( html ),
 			} );
@@ -186,6 +188,26 @@ export function createNestedTemplatedElementView( {
 			}
 
 			this.setElement( $templateRoot );
+		},
+
+		async _renderChildrenAsync( this: NestedTwigView ) {
+			this._renderChildren();
+
+			const renderPromises: Promise< void >[] = [];
+
+			this.children.each( ( childView: ElementView ) => {
+				const nestedChild = childView as unknown as NestedTwigView;
+
+				if ( nestedChild._abortController ) {
+					renderPromises.push(
+						new Promise( ( resolve ) => {
+							nestedChild.once( 'render', resolve );
+						} )
+					);
+				}
+			} );
+
+			await Promise.all( renderPromises );
 		},
 
 		getChildViewContainer( this: NestedTwigView ) {
