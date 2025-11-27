@@ -12,11 +12,5 @@
 	data-id="{{ id }}"
 	{{ editor_attributes | default('') | raw }}
 	{{ settings.attributes | default('') | raw }}
->
-	{% for type, type_children in children %}
-		{% for child_html in type_children %}
-			{{ child_html | raw }}
-		{% endfor %}
-	{% endfor %}
-</button>
+>{{ children_placeholder | default('') | raw }}</button>
 

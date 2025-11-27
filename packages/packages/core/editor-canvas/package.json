@@ -37,6 +37,7 @@
 		"react-dom": "^18.3.1"
 	},
 	"dependencies": {
+		"@elementor/alpinejs": "3.33.0",
 		"@elementor/editor": "3.33.0",
 		"@elementor/editor-controls": "3.33.0",
 		"@elementor/editor-documents": "3.33.0",

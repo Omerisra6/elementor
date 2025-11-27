@@ -166,7 +166,7 @@ class Atomic_Tab extends Atomic_Element_Base {
 			'settings' => $this->get_atomic_settings(),
 			'base_styles' => $this->get_base_styles_dictionary(),
 			'interactions' => $this->get_interactions_ids(),
-			'children' => $this->render_children_to_html(),
+			'children_placeholder' => $this->get_children_placeholder(),
 			'is_active' => $is_active,
 			'tab_id' => Atomic_Tabs::get_tab_id( $tabs_id, $index ),
 			'tab_content_id' => Atomic_Tabs::get_tab_content_id( $tabs_id, $index ),

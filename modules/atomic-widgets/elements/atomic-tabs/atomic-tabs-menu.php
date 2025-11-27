@@ -95,7 +95,7 @@ class Atomic_Tabs_Menu extends Atomic_Element_Base {
 			'settings' => $this->get_atomic_settings(),
 			'base_styles' => $this->get_base_styles_dictionary(),
 			'interactions' => $this->get_interactions_ids(),
-			'children' => $this->render_children_to_html(),
+			'children_placeholder' => $this->get_children_placeholder(),
 		];
 	}
 }

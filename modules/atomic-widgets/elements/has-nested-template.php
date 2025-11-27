@@ -36,8 +36,14 @@ trait Has_Nested_Template {
 
 			$context = $this->build_template_context();
 
+			$template_html = $renderer->render( $this->get_main_template(), $context );
+
+			$children_html = $this->render_children_to_html();
+
+			$output = str_replace( $this->get_children_placeholder(), $children_html, $template_html );
+
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo $renderer->render( $this->get_main_template(), $context );
+			echo $output;
 		} catch ( \Exception $e ) {
 			if ( Utils::is_elementor_debug() ) {
 				throw $e;
@@ -52,40 +58,20 @@ trait Has_Nested_Template {
 			'settings' => $this->get_atomic_settings(),
 			'base_styles' => $this->get_base_styles_dictionary(),
 			'interactions' => $this->get_interactions_ids(),
-			'children' => $this->render_children_to_html(),
+			'children_placeholder' => $this->get_children_placeholder(),
 		];
 	}
 
-	protected function render_children_to_html(): array {
-		$children_html = [];
+	protected function render_children_to_html(): string {
+		$html = '';
 
 		foreach ( $this->get_children() as $child ) {
-			$child_type = $child->get_type();
-
 			ob_start();
 			$child->print_element();
-			$html = ob_get_clean();
-
-			if ( ! isset( $children_html[ $child_type ] ) ) {
-				$children_html[ $child_type ] = [];
-			}
-
-			$children_html[ $child_type ][] = $html;
+			$html .= ob_get_clean();
 		}
 
-		return $children_html;
-	}
-
-	protected function render_child_by_type( string $type ): string {
-		foreach ( $this->get_children() as $child ) {
-			if ( $child->get_type() === $type ) {
-				ob_start();
-				$child->print_element();
-				return ob_get_clean();
-			}
-		}
-
-		return '';
+		return $html;
 	}
 
 	public function before_render() {
@@ -96,6 +82,10 @@ trait Has_Nested_Template {
 
 	public function print_content() {
 		$this->render();
+	}
+
+	protected function get_children_placeholder(): string {
+		return '<!-- elementor-children-placeholder -->';
 	}
 }
 

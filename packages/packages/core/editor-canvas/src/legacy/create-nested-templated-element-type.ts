@@ -1,3 +1,5 @@
+import { ELEMENT_STYLE_CHANGE_EVENT } from '@elementor/editor-elements';
+
 import { type DomRenderer } from '../renderers/create-dom-renderer';
 import { signalizedProcess } from '../utils/signalized-process';
 import {
@@ -60,6 +62,7 @@ function buildEditorAttributes( model: { get: ( key: 'id' ) => string; cid?: str
 	const attrs: Record< string, string > = {
 		'data-model-cid': cid,
 		'data-interaction-id': id,
+		'x-ignore': 'true',
 	};
 
 	return Object.entries( attrs )
@@ -72,15 +75,6 @@ function buildEditorClasses( model: { get: ( key: 'id' ) => string } ): string {
 
 	return [ 'elementor-element', 'elementor-element-edit-mode', `elementor-element-${ id }` ].join( ' ' );
 }
-
-type AlpineInstance = {
-	deferMutations: () => void;
-	flushAndStopDeferringMutations: () => void;
-};
-
-type PreviewWindow = Window & {
-	Alpine?: AlpineInstance;
-};
 
 interface NestedTwigView extends ElementView {
 	_abortController: AbortController | null;
@@ -99,9 +93,6 @@ export function createNestedTemplatedElementView( {
 	element,
 }: CreateNestedTemplatedElementTypeOptions ): typeof ElementView {
 	const legacyWindow = window as unknown as LegacyWindow;
-
-	const getPreviewAlpine = (): AlpineInstance | undefined =>
-		( legacyWindow.elementor?.$preview?.[ 0 ]?.contentWindow as PreviewWindow | undefined )?.Alpine;
 
 	const { templateKey, baseStylesDictionary, resolveProps } = setupTwigRenderer( {
 		type,
@@ -133,7 +124,6 @@ export function createNestedTemplatedElementView( {
 				.then( () => {
 					view.dispatchPreviewEvent( 'elementor/element/render' );
 
-					getPreviewAlpine()?.deferMutations();
 					return view._renderTwigTemplate();
 				} )
 				.then( () => {
@@ -141,9 +131,12 @@ export function createNestedTemplatedElementView( {
 				} )
 				.then( () => {
 					createAfterRender( view );
-					getPreviewAlpine()?.flushAndStopDeferringMutations();
 
+					// we need to trigger this event manually to ensure the panel opens after child render
 					view.model.trigger( 'render:complete' );
+
+					// We need to wait for the view to be created
+					window.dispatchEvent( new CustomEvent( ELEMENT_STYLE_CHANGE_EVENT ) );
 				} );
 
 			return process.execute();

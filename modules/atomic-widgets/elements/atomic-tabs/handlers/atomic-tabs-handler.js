@@ -8,9 +8,8 @@ register( {
 	elementType: 'e-tabs',
 	id: 'e-tabs-handler',
 	callback: ( { element, settings } ) => {
+		console.log( '$$$callback', element, settings );
 		const tabsId = element.dataset.id;
-
-		console.log( '$$$run', tabsId, element );
 		Alpine.data( `eTabs${ tabsId }`, () => ( {
 			activeTab: settings[ 'default-active-tab' ],
 
@@ -49,6 +48,7 @@ register( {
 				},
 				':aria-selected'() {
 					const id = this.$el.id;
+					console.log( '$$$aria-selected', id, this.activeTab );
 
 					return this.activeTab === id ? 'true' : 'false';
 				},

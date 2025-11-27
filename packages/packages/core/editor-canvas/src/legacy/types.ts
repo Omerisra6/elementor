@@ -52,7 +52,6 @@ export declare class ElementView {
 	children: {
 		length: number;
 		findByIndex: ( index: number ) => ElementView;
-		each: ( callback: ( view: ElementView ) => void ) => void;
 	};
 
 	constructor( ...args: unknown[] );
@@ -129,7 +128,6 @@ export type BackboneModel< Model extends object > = {
 	get: < T extends keyof Model >( key: T ) => Model[ T ];
 	set: < T extends keyof Model >( key: T, value: Model[ T ] ) => void;
 	toJSON: () => ToJSON< Model >;
-	trigger: ( event: string, ...args: unknown[] ) => void;
 };
 
 type BackboneCollection< Model extends object > = {
