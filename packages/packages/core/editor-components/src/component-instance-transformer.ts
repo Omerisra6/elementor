@@ -3,6 +3,7 @@ import { __getState as getState } from '@elementor/store';
 
 import { type ComponentInstanceOverrideProp } from './prop-types/component-instance-override-prop-type';
 import { selectUnpublishedComponents } from './store/store';
+import { applyOverridableWrappersToElements } from './utils/apply-overridable-wrappers-to-elements';
 import { getComponentDocumentData } from './utils/component-document-data';
 
 export const componentInstanceTransformer = createTransformer(
@@ -20,8 +21,14 @@ export const componentInstanceTransformer = createTransformer(
 		const overrides = overridesValue?.reduce( ( acc, override ) => ( { ...acc, ...override } ), {} );
 
 		if ( unpublishedComponent ) {
+			const elements = structuredClone( unpublishedComponent.elements );
+
+			if ( unpublishedComponent.overridableProps ) {
+				applyOverridableWrappersToElements( elements, unpublishedComponent.overridableProps );
+			}
+
 			return {
-				elements: structuredClone( unpublishedComponent.elements ),
+				elements,
 				overrides,
 			};
 		}
