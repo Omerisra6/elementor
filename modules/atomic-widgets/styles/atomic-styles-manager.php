@@ -126,9 +126,6 @@ class Atomic_Styles_Manager {
 
 				$breakpoint_path = array_merge( $path, [ $breakpoint_key ] );
 
-				// Dynamic style values must be resolved per-request because they depend on the
-				// current queried object (e.g. the term on a Product Archive). Caching them in a
-				// CSS file would bake the first-resolved value into every subsequent request.
 				if ( self::contains_dynamic_value( $style_params['get_styles']() ) ) {
 					$this->enqueue_inline_style( $breakpoint_path, $breakpoint_media, $render_css(), $version );
 					$this->cache_validity->validate( $breakpoint_path );
