@@ -8,10 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Metadata {
 
-	const WELL_KNOWN_PREFIX = '/.well-known/';
-	const PROTECTED_RESOURCE_SLUG = 'oauth-protected-resource';
-	const AUTHORIZATION_SERVER_SLUGS = [ 'oauth-authorization-server', 'openid-configuration' ];
-
 	public static function public_base(): string {
 		/**
 		 * The public origin clients use to reach this site, when it differs from home_url()
@@ -65,28 +61,5 @@ class Metadata {
 			'client_id_metadata_document_supported' => true,
 			'scopes_supported' => [ Oauth_Server::SCOPE ],
 		];
-	}
-
-	public static function maybe_serve_well_known(): void {
-		$path = wp_parse_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ), PHP_URL_PATH );
-
-		if ( ! is_string( $path ) || 0 !== strpos( $path, self::WELL_KNOWN_PREFIX ) ) {
-			return;
-		}
-
-		$slug = strtok( substr( $path, strlen( self::WELL_KNOWN_PREFIX ) ), '/' );
-
-		if ( self::PROTECTED_RESOURCE_SLUG === $slug ) {
-			self::send_json( self::protected_resource() );
-		}
-
-		if ( in_array( $slug, self::AUTHORIZATION_SERVER_SLUGS, true ) ) {
-			self::send_json( self::authorization_server() );
-		}
-	}
-
-	private static function send_json( array $document ): void {
-		header( 'Access-Control-Allow-Origin: *' );
-		wp_send_json( $document );
 	}
 }
