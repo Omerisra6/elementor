@@ -25,7 +25,7 @@ class Oauth_Server {
 		$token = new Token_Controller();
 		$bearer = new Bearer_Authenticator();
 
-		add_action( 'init', [ Metadata::class, 'maybe_serve_well_known' ], 0 );
+		add_action( 'parse_request', [ Metadata::class, 'maybe_serve_well_known' ], 0 );
 		add_action( 'rest_api_init', fn() => $this->register_routes( $clients, $authorize, $token ) );
 		add_filter( 'determine_current_user', [ $bearer, 'authenticate' ], 30 );
 		add_filter( 'application_password_is_api_request', [ $bearer, 'treat_mcp_route_as_api_request' ] );
