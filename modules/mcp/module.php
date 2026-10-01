@@ -8,6 +8,7 @@ use Elementor\MCP\Composer\Mcp\Registry as Shared_Registry;
 use Elementor\Modules\EditorOne\Classes\Menu_Data_Provider;
 use Elementor\Modules\Mcp\Abilities\Abstract_Ability;
 use Elementor\Modules\Mcp\AdminMenuItems\Editor_One_Mcp_Menu;
+use Elementor\Modules\Mcp\Oauth\Oauth_Server;
 use Elementor\Modules\Mcp\Preview\Public_Preview_Handler;
 use Elementor\Modules\Mcp\Registry\Ability_Registry;
 use Elementor\Modules\Mcp\RestApi\Mcp_Proxy_REST_API;
@@ -76,6 +77,8 @@ class Module extends BaseModule {
 		add_action( 'wp_abilities_api_init', [ $this, 'register_abilities' ] );
 		add_action( 'init', [ $this, 'register_shared_registry_slugs' ], 5 );
 		add_action( 'elementor/editor-one/menu/register', [ $this, 'register_editor_one_menu' ], Editor_One_Mcp_Menu::REGISTER_PRIORITY_AFTER_SUBMISSIONS );
+
+		( new Oauth_Server() )->register();
 	}
 
 	private function register_v3_standardized_maps_experiment(): void {
